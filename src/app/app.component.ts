@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFireDatabase } from '@angular/fire/database';
-import * as firebase from 'firebase';
-import { Observable } from 'rxjs';
+import { ViewEncapsulation } from '@angular/core'
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit {
 

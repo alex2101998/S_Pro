@@ -1,0 +1,12 @@
+body {
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #141E30;
+    background: linear-gradient(to right, #24243e, #141E30, #0f0c29);
+}
+
+app-root {
+    width: 100%;
+    text-align: -webkit-center;
+}

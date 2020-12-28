@@ -1,14 +1,39 @@
-<h1 style="text-align: center;">Das große Silvester-Cardgame</h1>
+<h1 class="heading">Saufbaum</h1>
 
-<div style="text-align: center;">
-  <h3>Deine Karte: </h3>
-  <img src="{{cards[rnd].url}}" width="200">
-  <i><p style="margin-top: -7px;">{{cards[rnd].name}}</p></i>
-</div>
+<table width=100%>
+    <tr>
+        <td>
+            <div style="text-align: center;">
+                <h2 style="color: white">Deine Karte</h2>
+                <img src="{{cards[rnd].url}}" width="250">
+                <i><p style="margin-top: -7px; color: white;">{{cards[rnd].name}}</p></i>
+            </div>
 
-<p style="font-size: large;text-align: center;"><b style="font-size: 28px;">{{33 - usedValues.length}} </b>cards left in this deck</p>
-<div class="buttons">
-  <button (click)="randomCard()">Gimme a random card
-  </button>
-  <button (click)="newDeck()">New Deck</button>
-</div>
+            <p class="counting"><b style="font-size: 28px; color: red;">{{33 - usedValues.length}} </b>cards left in this deck</p>
+            <div class="buttons">
+                <button (click)="randomCard()">Gimme a random card
+      </button>
+                <button (click)="newDeck()">New Deck</button>
+            </div>
+        </td>
+        <td>
+            <div class="rules">
+                <h2>Regeln</h2>
+                <p><u>Ass:</u> Alle Trinken</p>
+                <p><u>2:</u> Damen Trinken</p>
+                <p><u>3:</u> Buben Trinken</p>
+                <p><u>4:</u> Kurze Pause</p>
+                <p><u>5:</u> Kamerascheu</p>
+                <p><u>6:</u> 5 Liegestüze</p>
+                <p><u>7:</u> 10 Kniebäugen</p>
+                <p><u>8:</u> Trinkbuddy</p>
+                <p><u>9:</u> Wikinger</p>
+                <p><u>10:</u> Reimen</p>
+                <p><u>Bube:</u> Regel</p>
+                <p><u>Dame:</u> Question Queen</p>
+                <p><u>König:</u> Kategorie</p>
+            </div>
+        </td>
+    </tr>
+</table>
+<input class="newRuleInput" type="text" name="regeltext" placeholder="Neue Regel hinzufügen...">

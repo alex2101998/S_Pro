@@ -11,17 +11,19 @@ h2{
  display:flex;
 }
 .wrapper table{
-    width: 100%;
+    width: 100%; 
     text-align: center;
 }
 
 button{
     font-size: 30px;
-    background-color: white;
+    background-color: #141E30;
+    background: linear-gradient(to right, #24243e, #141E30, #0f0c29);
+    color: white;
     margin: 10px;
     border: 5px solid black;
-    width: 200px;
-    height: 100px;
+    width: 500px;
+    height: 200px;
     border-radius: 15px;
     transition: .77s;
 }
@@ -39,35 +41,44 @@ button{
 }
 .at:hover{
     background-color: #1abc9c;
+    background: #1abc9c;
     color: white;
     border-color: white;
     border-width: 1px;
 }
 .vt:hover{
     background-color: #8e44ad;
+    background: #8e44ad;
     color: white;
     border-color: white;
     border-width: 1px;
 }
 .bf:hover{
     background-color: #d35400;
+    background: #d35400;
     color: white;
     border-color: white;
     border-width: 1px;
 }
 .sb:hover{
     background-color: gold;
+    background: gold;
     color: white;
     border-color: white;
     border-width: 1px;
 }
 
+.heading {
+    font-size: 20px;
+    color: white;
+}
+
 .awesome {     
+    margin-top: 30px;
     text-align: center;
-    font-size:45px;
+    font-size:65px;
     font-weight: bold;
     animation:colorchange 20s infinite alternate;
-
   }
 
 
