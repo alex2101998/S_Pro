@@ -23,6 +23,7 @@ export class AuthService {
 
   logOut(){
     this.database.ref('currentPlay/game/volltanken/players/' + localStorage.getItem('name')).set({});
+    this.database.ref('currentPlay/game/saufbaum/players/' + localStorage.getItem('name')).set({});
     this.database.ref('currentUsers').child(localStorage.getItem('name')).remove()
     localStorage.clear()
   }

@@ -19,6 +19,12 @@ export class SaufbaumComponent implements OnInit {
   usedValues: any[];
   isJack: boolean = false;
   username: string;
+  joined: boolean = false;
+  playerCount: number;
+  active: any = false;
+  activePlayer: number;
+  role: any;
+  players: any[];
 
 
   constructor(db: AngularFireDatabase
@@ -42,21 +48,76 @@ export class SaufbaumComponent implements OnInit {
     db.list('currentPlay/game/saufbaum/customRules').valueChanges().subscribe(x => {
      this.rules = x
     })
+    db.list('currentPlay/game/saufbaum/activePlayer').valueChanges().subscribe(x => {
+      //@ts-ignore
+      if (x[0] == localStorage.getItem('name')) {
+        this.active = true;
+      }
+      else {
+        this.active = false;
+      }
+    })
+    db.list('currentPlay/game/saufbaum/players').valueChanges().subscribe(x => {
+      this.players = x
+
+      this.players.forEach(player => {
+        if (player.name == localStorage.getItem('name')) {
+          this.joined = true;
+          this.role = localStorage.getItem('role')
+        }
+        if (player.active == true) {
+          this.activePlayer = this.players.indexOf(player)
+        }
+      });
+      if (this.players.length == 0) {
+        this.newDeck()
+      }
+    })
   }
   ngOnInit(): void {
     this.username = localStorage.getItem('name')
   }
 
-  randomCard() {
-    var num = Math.floor(Math.random() * 53);
-    if (this.usedValues.length != 53) {
-      while (this.usedValues.includes(num)) {
-        num = Math.floor(Math.random() * 53);
+  randomCard(start: boolean) {
+    if (localStorage.getItem('role') == 'admin' || localStorage.getItem('role') == 'host' || this.active) {
+      var num = Math.floor(Math.random() * 53);
+      if (this.usedValues.length != 53) {
+        while (this.usedValues.includes(num)) {
+          num = Math.floor(Math.random() * 53);
+        }
+        this.database.ref('currentPlay/game/saufbaum/randomValue').set({
+          value: num
+        });
+        this.database.ref('currentPlay/game/saufbaum/usedValues').push(num)
+
+        if (!start) {
+          if (this.activePlayer == this.players.length - 1) {
+            this.database.ref('currentPlay/game/saufbaum/players/' + this.players[0].name).set({
+              name: this.players[0].name,
+              active: true
+            });
+          } else {
+            this.database.ref('currentPlay/game/saufbaum/players/' + this.players[this.activePlayer + 1].name).set({
+              active: true,
+              name: this.players[this.activePlayer + 1].name
+            });
+          }
+
+          this.database.ref('currentPlay/game/saufbaum/players/' + this.players[this.activePlayer].name).set({
+            name: this.players[this.activePlayer].name
+          });
+          if (this.activePlayer == this.players.length - 1) {
+            this.database.ref('currentPlay/game/saufbaum/activePlayer/').set({
+              name: this.players[0].name
+            });
+          }
+          else {
+            this.database.ref('currentPlay/game/saufbaum/activePlayer/').set({
+              name: this.players[this.activePlayer + 1].name
+            });
+          }
+        }
       }
-      this.database.ref('currentPlay/game/saufbaum/randomValue').set({
-        value: num
-      });
-      this.database.ref('currentPlay/game/saufbaum/usedValues').push(num)
     }
   }
 
@@ -68,11 +129,16 @@ export class SaufbaumComponent implements OnInit {
       40: 40
     })
     this.database.ref('currentPlay/game/saufbaum/customRules').set({})
+    this.players.forEach(element => {
+      this.database.ref('currentPlay/game/saufbaum/players/' + element.name).set({
+        name: element.name
+      });
+    });
   }
 
   submitRule(event){
     var text = event.target[0].value
-    var name = event.target[1].value
+    var name = localStorage.getItem('name')
     event.preventDefault()
     console.log(text, name);
     this.database.ref('currentPlay/game/saufbaum/customRules').push({
@@ -80,5 +146,28 @@ export class SaufbaumComponent implements OnInit {
       description: text
     })
     this.isJack = false
+  }
+
+  joinGame() {
+    localStorage.setItem('game', 'saufbaum')
+    this.database.ref('currentPlay/game/saufbaum/players/' + localStorage.getItem('name')).set({
+      name: localStorage.getItem('name')
+    });
+    this.joined = true
+  }
+  exitGame() {
+    localStorage.removeItem('game')
+    this.database.ref('currentPlay/game/saufbaum/players/' + localStorage.getItem('name')).set({});
+    this.joined = false
+  }
+  startGame() {
+    if (localStorage.getItem('role') == 'admin' || localStorage.getItem('role') == 'host') {
+      this.database.ref('currentPlay/game/saufbaum/players/' + this.players[0].name).set({
+        name: this.players[0].name,
+        active: true
+      });
+      this.randomCard(true)
+      this.playerCount = this.players.length
+    }
   }
 }

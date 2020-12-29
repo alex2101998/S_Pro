@@ -1,6 +1,6 @@
 <h1 class="heading">Saufbaum</h1>
 <button mat-icon-button class="return" style="border: none;">
-    <mat-icon routerLink="/" class="returnIcon">keyboard_backspace</mat-icon>
+    <mat-icon routerLink="/" class="returnIcon" (click)="exitGame()">keyboard_backspace</mat-icon>
 </button>
 <div class="logOut">
     <button mat-icon-button style="border: none;">
@@ -10,7 +10,16 @@
 </div>
 <table width=100%>
     <tr>
-        <td>
+        <td style="width: 30%; vertical-align: baseline; text-align: center;">
+            <h2 style="color: white">Spieler</h2>
+            <ul style="list-style: none; color: white;">
+                <li *ngFor="let player of players" style="padding: 0; text-align: left;" [ngClass]="{'activeClass': player.active}">
+                    <span>{{player.name}}</span>
+                    <hr>
+                </li>
+            </ul>
+        </td>
+        <td style="text-align: center;">
             <div style="text-align: center;">
                 <h2 style="color: white" *ngIf="this.rnd !=40">Deine Karte</h2>
                 <img src="{{cards[rnd].url}}" width="250" height="400">
@@ -19,16 +28,24 @@
                 </i>
             </div>
 
-            <p class="counting"><b style="font-size: 28px; color: red;">{{53 - (usedValues?
+            <p *ngIf="this.rnd != 40" class="counting"><b style="font-size: 28px; color: red;">{{53 - (usedValues?
                     usedValues.length : 53)}} </b>Karten verbleiben in diesem Deck</p>
-            <div class="buttons" *ngIf="this.rnd !=40">
-                <button class="button random" (click)="randomCard()">Karte
-                    ziehen</button>
-                <button class="button new" (click)="newDeck()">Neues Deck</button>
+            <div *ngIf="this.active || this.role == 'admin' || this.role == 'host'">
+                <div class="buttons" *ngIf="this.rnd !=40">
+                    <button class="button random" (click)="randomCard(false)">Karte
+                        ziehen</button>
+                    <button class="button new" (click)="newDeck()" *ngIf="this.role == 'admin' || this.role == 'host'">Neues Deck</button>
+                </div>
+                <div class="buttons" *ngIf="this.rnd == 40 && this.joined">
+                    <button class="button random" (click)="startGame()" style="width: 200px;" *ngIf="this.role == 'admin' || this.role == 'host'">Start!</button>
+                </div>
+                <div class="buttons" *ngIf="!this.joined">
+                    <button class="button new" (click)="newDeck()" *ngIf="this.role == 'admin' || this.role == 'host'">Neues Deck</button>
+                </div>
             </div>
-            <div class="buttons" *ngIf="this.rnd ==40">
-                <button class="button new" (click)="randomCard()">Neues Spiel starten</button>
-            </div>
+            <button class="button" style="text-align: center;" (click)="joinGame()" *ngIf="!this.joined && this.rnd == 40">
+                Ich möchte mitspielen!
+            </button>
         </td>
         <td>
             <div class="rules">
@@ -50,12 +67,12 @@
         </td>
     </tr>
 </table>
-<form style="width: 80%;" (submit)="submitRule($event)" *ngIf="isJack">
-    <input class="newRuleInput" type="text" name="regeltext" placeholder="Neue Regel hinzufügen..." required minlength="10">
-    <input class="newRuleName" type="text" name="name" placeholder="Name" required minlength="4">
-    <button class="button" label="Regel erstellen" type="submit">Regel erstellen</button>
-</form>
-
+<div *ngIf="this.active || this.role == 'admin' || this.role == 'host'">
+    <form style="width: 80%;" (submit)="submitRule($event)" *ngIf="isJack">
+        <input class="newRuleInput" type="text" name="regeltext" placeholder="Neue Regel hinzufügen..." required minlength="10">
+        <button class="button" label="Regel erstellen" type="submit">Regel erstellen</button>
+    </form>
+</div>
 <h2 style="font-size: 30px;" class="rules">Zusätzliche Regeln</h2>
 <ul style="width: 80%;" *ngIf="rules.length > 0">
     <li *ngFor="let rule of rules">

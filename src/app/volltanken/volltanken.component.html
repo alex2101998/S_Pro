@@ -51,7 +51,7 @@
 
 
 <div class="buttons" *ngIf="this.rnd == 99 && this.joined">
-    <button class="button random" (click)="startGame()" style="width: 200px;">Start!</button>
+    <button class="button random" (click)="startGame()" style="width: 200px;" *ngIf="this.role == 'admin' || this.role == 'host'">Start!</button>
 </div>
 
 <button class="button" (click)="joinGame()" *ngIf="!this.joined && this.rnd == 99">

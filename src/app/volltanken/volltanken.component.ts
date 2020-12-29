@@ -150,6 +150,5 @@ export class VolltankenComponent implements OnInit {
       this.randomCard(true)
       this.playerCount = this.players.length
     }
-
   }
 }
