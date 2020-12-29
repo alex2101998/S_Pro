@@ -1,1 +1,96 @@
-<p>busfahrer works!</p>
+<h1 class="heading">Busfahrer</h1>
+<button mat-icon-button class="return" style="border: none;">
+    <mat-icon routerLink="/" class="returnIcon">keyboard_backspace</mat-icon>
+</button>
+<div class="logOut">
+    <button mat-icon-button style="border: none;">
+        <mat-icon routerLink="/logout" class="logOutIcon">exit_to_app</mat-icon>
+    </button>
+    <p class="loggedInAs">Eingeloggt als {{username}}</p>
+</div>
+
+<div *ngIf="usedValues.length != cards.length">
+    <div class="cardbox">
+        <div style="text-align: center;">
+            <h2 style="color: white">Rot oder Schwarz</h2>
+            <img *ngIf="this.rnd[0] != 40" src="{{cards[(rnd[0])].url}}" width="200" height="300">
+            <img *ngIf="this.rnd[0] == 40" src="{{deckblatt.url}}" width="200" height="300">
+            <i>
+                <p *ngIf="this.rnd[0] != 40" style="margin-top: -7px; color: white;">{{cards[rnd[0]].name}}</p>
+                <p *ngIf="this.rnd[0] == 40" style="margin-top: -7px; visibility: hidden;">abc</p>
+            </i>
+        </div>
+
+        <div class="buttons" *ngIf="this.rnd[1] == 40">
+            <button class="button random" (click)="randomCard(0)">Karte ziehen</button>
+        </div>
+    </div>
+
+    <div class="cardbox">
+        <div style="text-align: center;">
+            <h2 style="color: white">Höher oder Tiefer</h2>
+            <img *ngIf="this.rnd[1] != 40" src="{{cards[(rnd[1])].url}}" width="200" height="300">
+            <img *ngIf="this.rnd[1] == 40" src="{{deckblatt.url}}" width="200" height="300">
+            <i>
+                <p *ngIf="this.rnd[1] != 40" style="margin-top: -7px; color: white;">{{cards[rnd[1]].name}}</p>
+                <p *ngIf="this.rnd[1] == 40" style="margin-top: -7px; visibility: hidden;">abc</p>
+            </i>
+        </div>
+        
+        <div class="buttons" *ngIf="this.rnd[0] != 40 && this.rnd[2] == 40">
+            <button class="button random" (click)="randomCard(1)">Karte ziehen</button>
+        </div>
+    </div>
+
+    <div class="cardbox">
+        <div style="text-align: center;">
+            <h2 style="color: white">Dazwischen oder Außerhalb</h2>
+            <img *ngIf="this.rnd[2] != 40" src="{{cards[(rnd[2])].url}}" width="200" height="300">
+            <img *ngIf="this.rnd[2] == 40" src="{{deckblatt.url}}" width="200" height="300">
+            <i>
+                <p *ngIf="this.rnd[2] != 40" style="margin-top: -7px; color: white;">{{cards[rnd[2]].name}}</p>
+                <p *ngIf="this.rnd[2] == 40" style="margin-top: -7px; visibility: hidden;">abc</p>
+            </i>
+        </div>
+        <div class="buttons" *ngIf="this.rnd[1] != 40 && this.rnd[3] == 40">
+            <button class="button random" (click)="randomCard(2)">Karte ziehen</button>
+        </div>
+    </div>
+
+    <div class="cardbox">
+        <div style="text-align: center;">
+            <h2 style="color: white">Kreuz, Pik, Herz oder Karo</h2>
+            <img *ngIf="this.rnd[3] != 40" src="{{cards[(rnd[3])].url}}" width="200" height="300">
+            <img *ngIf="this.rnd[3] == 40" src="{{deckblatt.url}}" width="200" height="300">
+            <i>
+                <p *ngIf="this.rnd[3] != 40" style="margin-top: -7px; color: white;">{{cards[rnd[3]].name}}</p>
+                <p *ngIf="this.rnd[3] == 40" style="margin-top: -7px; visibility: hidden;">abc</p>
+            </i>
+        </div>
+        
+        <div class="buttons" *ngIf="this.rnd[2] != 40">
+            <button class="button random" (click)="randomCard(3)">Karte ziehen</button>
+        </div>
+    </div>
+    <br class="clearing" />
+</div>
+
+<div>
+    <p class="counting"><b style="font-size: 28px; color: red;">{{cards.length - (usedValues.length? usedValues.length : cards.length)}} </b>cards left in this deck</p>
+    <div>
+        <div class="buttons">
+            <button class="button new" (click)="newDeck()">Neues Deck</button>
+            <button class="button new" *ngIf="this.rnd[0] != 40 && usedValues.length != cards.length" (click)="fail()">Verkackt</button>
+        </div>
+    </div>
+    
+    <div *ngIf="usedValues.length == cards.length">
+        <img src="https://banner2.cleanpng.com/20180630/esh/kisspng-traffic-collision-accident-bus-drawing-clip-art-5b37cc178a1802.2920162515303833835656.jpg" alt="Test">
+        <p class="counting">Du hast den Bus gecrasht. Zeit für eine neue Runde.</p>
+    </div>
+    <!--Generator, welcher Spieler muss wird hiervon gestartet
+    <div class="buttons" *ngIf="this.rnd[0] == 40">
+        <button class="button new" (click)="randomCard(0)">Neues Spiel starten!</button>
+    </div>
+    --> 
+</div>
