@@ -18,6 +18,7 @@ export class SaufbaumComponent implements OnInit {
   rnd: any = 0;
   usedValues: any[];
   isJack: boolean = false;
+  username: string;
 
 
   constructor(db: AngularFireDatabase
@@ -43,6 +44,7 @@ export class SaufbaumComponent implements OnInit {
     })
   }
   ngOnInit(): void {
+    this.username = localStorage.getItem('name')
   }
 
   randomCard() {

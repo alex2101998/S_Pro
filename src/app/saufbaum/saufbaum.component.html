@@ -2,6 +2,12 @@
 <button mat-icon-button class="return" style="border: none;">
   <mat-icon routerLink="/" class="returnIcon">keyboard_backspace</mat-icon>
 </button>
+<div class="logOut">
+    <button mat-icon-button style="border: none;">
+        <mat-icon routerLink="/logout" class="logOutIcon">exit_to_app</mat-icon>
+    </button>
+    <p class="loggedInAs">Eingeloggt als {{username}}</p>
+</div>
 <table width=100%>
     <tr>
         <td>
