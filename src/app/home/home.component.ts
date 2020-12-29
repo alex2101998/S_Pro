@@ -10,7 +10,12 @@ export class HomeComponent implements OnInit {
 
   constructor(private route:ActivatedRoute,private router:Router) {  }
 
+  username: string;
+
   ngOnInit(): void {
+    this.username = localStorage.getItem('name')
+    console.log(this.username);
+    
   }
 
   goToGame(game){

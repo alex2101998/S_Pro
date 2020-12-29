@@ -1,11 +1,16 @@
 import { Injectable } from '@angular/core';
+import { AngularFireDatabase } from '@angular/fire/database';
+import * as firebase from 'firebase';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor() { }
+  database = firebase.default.database();
+  constructor(db: AngularFireDatabase) {
+    
+   }
 
   isUserLoggedIn(){
     let user = localStorage.getItem('name')
@@ -17,6 +22,7 @@ export class AuthService {
   }
 
   logOut(){
+    this.database.ref('currentUsers').child(localStorage.getItem('name')).remove()
     localStorage.clear()
   }
 }

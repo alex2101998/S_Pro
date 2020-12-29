@@ -12,7 +12,7 @@ import { AuthService } from '../auth-service/auth.service';
 export class LoginComponent implements OnInit {
 
   database = firebase.default.database();
-  
+
   username = ''
   password = ''
   returnUrl: string;
@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
     db.list('/user').valueChanges().subscribe(data => {
       this.users = data
     });
-   }
+  }
 
   ngOnInit() {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
@@ -47,11 +47,17 @@ export class LoginComponent implements OnInit {
   }
 
   checkLogin() {
+    var time = new Date().toISOString()
+    console.log(time);
+
     this.users.forEach(user => {
       if (user.username == this.username && user.password == this.password) {
         localStorage.setItem('name', user.username)
-        this.database.ref('currentUsers').push(user.username)
-  
+        this.database.ref('currentUsers/' + user.username).set({
+            time: time
+          }
+        )
+
       }
     });
 

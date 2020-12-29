@@ -141,3 +141,8 @@ h2 {
 .returnIcon:hover {
     font-size: 50px;
 }
+
+.loggedInAs {
+    font-size: 20;
+    color: white;
+}
