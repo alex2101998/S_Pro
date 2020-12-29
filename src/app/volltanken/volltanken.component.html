@@ -1,1 +1,23 @@
-<p>volltanken works!</p>
+<h1 class="heading">Tanken</h1>
+<button mat-icon-button class="return" style="border: none;">
+    <mat-icon routerLink="/" class="returnIcon">keyboard_backspace</mat-icon>
+</button>
+<div style="text-align: center;">
+    <h2 *ngIf="this.rnd != 99" style="color: white">Deine Karte</h2>
+    <img *ngIf="this.rnd != 99" src="{{cards[rnd].url}}" width="390" height="680">
+    <img *ngIf="this.rnd == 99" src="{{deckblatt.url}}" width="430" height="680">
+    <i>
+        <p *ngIf="this.rnd != 99" style="margin-top: -7px; color: white;">{{cards[rnd].name}}</p>
+    </i>
+</div>
+
+<p *ngIf="this.rnd != 99" class="counting"><b style="font-size: 28px; color: red;">{{53 - (usedValues.length?
+        usedValues.length : 53)}} </b>cards left in this deck</p>
+<div class="buttons" *ngIf="this.rnd != 99">
+    <button class="button random" (click)="randomCard()">Karte ziehen</button>
+    <button class="button new" (click)="newDeck()">Neues Deck</button>
+</div>
+
+<div class="buttons" *ngIf="this.rnd == 99">
+    <button class="button new" (click)="randomCard()">Neues Spiel starten!</button>
+</div>

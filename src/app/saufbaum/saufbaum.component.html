@@ -1,19 +1,23 @@
 <h1 class="heading">Saufbaum</h1>
-
+<button mat-icon-button class="return" style="border: none;">
+  <mat-icon routerLink="/" class="returnIcon">keyboard_backspace</mat-icon>
+</button>
 <table width=100%>
     <tr>
         <td>
             <div style="text-align: center;">
-                <h2 style="color: white">Deine Karte</h2>
-                <img src="{{cards[rnd].url}}" width="250">
+                <h2 style="color: white" *ngIf="this.rnd !=40">Deine Karte</h2>
+                <img src="{{cards[rnd].url}}" width="250" height="400">
                 <i><p style="margin-top: -7px; color: white;">{{cards[rnd].name}}</p></i>
             </div>
 
-            <p class="counting"><b style="font-size: 28px; color: red;">{{33 - usedValues.length}} </b>cards left in this deck</p>
-            <div class="buttons">
-                <button (click)="randomCard()">Gimme a random card
-      </button>
-                <button (click)="newDeck()">New Deck</button>
+            <p class="counting"><b style="font-size: 28px; color: red;">{{53 - usedValues.length}} </b>Karten verbleiben in diesem Deck</p>
+            <div class="buttons" *ngIf="this.rnd !=40">
+                <button class="button random" (click)="randomCard()" *ngIf="this.usedValues.length != 53">Karte ziehen</button>
+                <button class="button new" (click)="newDeck()">Neues Deck</button>
+            </div>
+            <div class="buttons" *ngIf="this.rnd ==40">
+                <button class="button new" (click)="randomCard()">Neues Spiel starten</button>
             </div>
         </td>
         <td>
@@ -36,4 +40,16 @@
         </td>
     </tr>
 </table>
-<input class="newRuleInput" type="text" name="regeltext" placeholder="Neue Regel hinzufügen...">
+<form style="width: 80%;" (submit)="submitRule($event)" *ngIf="isJack">
+    <input class="newRuleInput" type="text" name="regeltext" placeholder="Neue Regel hinzufügen..." required minlength="10">
+    <input class="newRuleName" type="text" name="name" placeholder="Name" required minlength="4">
+    <button class="button" label="Regel erstellen" type="submit">Regel erstellen</button>
+</form>
+
+<h2 style="font-size: 30px;" class="rules">Zusätzliche Regeln</h2>
+<ul style="width: 80%;" *ngIf="rules.length > 0">
+    <li *ngFor="let rule of rules">
+        <p class="customRule">{{rule.description}} - {{rule.name}}</p>
+    </li>
+</ul>
+<p *ngIf="rules.length == 0" style="color: white; font-size: 20px;">Bisher wurde noch kein Bube aufgedeckt. Deswegen gibt es keine zusätzlichen Regeln</p>

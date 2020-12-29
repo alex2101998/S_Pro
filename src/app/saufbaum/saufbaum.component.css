@@ -2,11 +2,28 @@
     text-align: center;
 }
 
-button {
-    margin: 10px;
-    border: 1px solid black;
-    border-radius: 10px;
+.button {
     font-size: 20px;
+    background-color: #141E30;
+    background: linear-gradient(to right, #24243e, #141E30, #0f0c29);
+    color: white;
+    margin: 10px;
+    border: 2px solid black;
+    height: 60px;
+    border-radius: 15px;
+    transition: .27s;
+}
+
+.button.new:hover {
+    background-color: blue;
+    background: blue;
+    border-color: white;
+}
+
+.button.random:hover {
+    background-color: green;
+    background: green;
+    border-color: white;
 }
 
 .heading {
@@ -18,7 +35,7 @@ button {
     color: #fcedd8;
     font-family: 'Niconne', cursive;
     font-weight: 700;
-    text-shadow: 5px 5px 0px #eb452b, 10px 10px 0px #efa032, 15px 15px 0px #46b59b, 20px 20px 0px #017e7f, 25px 25px 0px #052939, 30px 30px 0px #c11a2b, 35px 35px 0px #c11a2b, 40px 40px 0px #c11a2b, 45px 45px 0px #c11a2b;
+    text-shadow: 5px 5px 0px #eb452b, 10px 10px 0px #efa032, 15px 15px 0px #46b59b;
 }
 
 .rules {
@@ -34,8 +51,42 @@ button {
 }
 
 .newRuleInput {
-    width: 80%;
+    width: 60%;
     height: 30px;
     font-size: 25px;
     border-radius: 8px;
+    margin-right: 25px;
+}
+
+.newRuleName {
+    width: 20%;
+    height: 30px;
+    font-size: 25px;
+    border-radius: 8px;
+}
+
+.return {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.returnIcon {
+    color: white;
+    font-size: 60px;
+    transition: .7s;
+}
+
+.returnIcon:hover {
+    font-size: 70px;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.customRule {
+    text-align: left;
+    font-size: 20px;
+    color: white;
 }
