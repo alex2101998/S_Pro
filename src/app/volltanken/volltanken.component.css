@@ -87,3 +87,24 @@ button {
     background: green;
     border-color: white;
 }
+
+.logOut {
+    position: absolute;
+    top: 10px;
+    right: 50px;
+}
+
+.logOutIcon {
+    color: white;
+    font-size: 40px;
+    transition: .7s;
+}
+
+.logOutIcon:hover {
+    font-size: 50px;
+}
+
+.loggedInAs {
+    font-size: 20;
+    color: white;
+}
