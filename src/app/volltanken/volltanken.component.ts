@@ -17,6 +17,7 @@ export class VolltankenComponent implements OnInit {
   rnd: any = 0;
   usedValues: any[];
   deckblatt: any = {url: "" };
+  username: string;
 
   constructor(db: AngularFireDatabase
   ) {
@@ -34,6 +35,7 @@ export class VolltankenComponent implements OnInit {
     })
   }
   ngOnInit(): void {
+    this.username = localStorage.getItem('name')
   }
 
   randomCard() {
