@@ -11,7 +11,6 @@ import { Observable } from 'rxjs';
 export class SaufbaumComponent implements OnInit {
 
   database = firebase.default.database();
-  title = 'Silvester';
   cardgame: Observable<any[]>;
   cards: any[] = [{ name: "", url: "" }];
   rules: any[] = [];

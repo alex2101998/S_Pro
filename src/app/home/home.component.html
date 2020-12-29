@@ -1,23 +1,25 @@
 <h1 class="awesome">Ultimative Online Silvester Party</h1>
-
+<button mat-icon-button class="return" style="border: none;">
+    <mat-icon routerLink="/logout" class="returnIcon">exit_to_app</mat-icon>
+  </button>
 <h2 class="heading">Gamehost: Nico Rößler</h2>
 
 <div class="wrapper">
     <table>
         <tr>
             <td>
-                <button class="sb" (click)="goToGame('saufbaum')" >Saufbaum</button>
+                <button class="game sb" (click)="goToGame('saufbaum')">Saufbaum</button>
             </td>
             <td>
-                <button class="bf" (click)="goToGame('busfahrer')">Busfahrer</button>
+                <button class="game bf" (click)="goToGame('busfahrer')">Busfahrer</button>
             </td>
         </tr>
         <tr>
             <td>
-                <button class="at" (click)="goToGame('activity')">Activity</button>
+                <button class="game at" (click)="goToGame('activity')">Activity</button>
             </td>
             <td>
-                <button class="vt" (click)="goToGame('volltanken')">Volltanken</button>
+                <button class="game" (click)="goToGame('volltanken')">Volltanken</button>
             </td>
         </tr>
     </table>

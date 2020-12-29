@@ -56,6 +56,9 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
 import {OverlayModule} from '@angular/cdk/overlay';
+import { LoginComponent } from './login/login.component';
+import { LogoutComponent } from './logout/logout.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -64,7 +67,9 @@ import {OverlayModule} from '@angular/cdk/overlay';
     VolltankenComponent,
     SaufbaumComponent,
     BusfahrerComponent,
-    ActivityComponent
+    ActivityComponent,
+    LoginComponent,
+    LogoutComponent
   ],
   imports: [
     BrowserModule,
@@ -106,7 +111,8 @@ import {OverlayModule} from '@angular/cdk/overlay';
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
-    MatTreeModule
+    MatTreeModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

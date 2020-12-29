@@ -1,0 +1,32 @@
+<div class="outercontainer"></div>
+<div class="container">
+    <div class="innercontainer">
+        <h1>
+            <span class="span">
+                <img id="logoImg" src="../../assets/kisspng-computer-icons-confetti-party-new-year-streamer-5ad72193620e86.0445289115240482754017.png">
+            </span>
+            <span>Online Silvester</span>
+            <span class="span">
+                <img id="logoImg" src="../../assets/kisspng-computer-icons-confetti-party-new-year-streamer-5ad72193620e86.0445289115240482754017.png">
+            </span>
+        </h1>
+        <div>
+            <label>
+                <p> Benutzername:</p>
+                <input class="input" type="text" name="username" [(ngModel)]="username" (keyup.enter)="focusnext()">
+            </label>
+            <label>
+                <p>Passwort:</p>
+                <div class="pw">
+                    <input id="pw" class="pwin" type="password" (keyup.enter)=checkLogin() name="password"
+                        [(ngModel)]="password">
+                    <i class="material-icons" (mouseleave)="showPasswordFalse()" (mousedown)="showPasswordTrue()"
+                        (mouseup)="showPasswordFalse()">
+                        remove_red_eye
+                    </i>
+                </div>
+            </label>
+        </div>
+        <button (click)=checkLogin()>Anmelden</button>
+    </div>
+</div>
