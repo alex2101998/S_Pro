@@ -1,6 +1,6 @@
 <h1 class="heading">Saufbaum</h1>
 <button mat-icon-button class="return" style="border: none;">
-  <mat-icon routerLink="/" class="returnIcon">keyboard_backspace</mat-icon>
+    <mat-icon routerLink="/" class="returnIcon">keyboard_backspace</mat-icon>
 </button>
 <div class="logOut">
     <button mat-icon-button style="border: none;">
@@ -14,12 +14,16 @@
             <div style="text-align: center;">
                 <h2 style="color: white" *ngIf="this.rnd !=40">Deine Karte</h2>
                 <img src="{{cards[rnd].url}}" width="250" height="400">
-                <i><p style="margin-top: -7px; color: white;">{{cards[rnd].name}}</p></i>
+                <i>
+                    <p style="margin-top: -7px; color: white;">{{cards[rnd].name}}</p>
+                </i>
             </div>
 
-            <p class="counting"><b style="font-size: 28px; color: red;">{{53 - usedValues.length}} </b>Karten verbleiben in diesem Deck</p>
+            <p class="counting"><b style="font-size: 28px; color: red;">{{53 - (usedValues?
+                    usedValues.length : 53)}} </b>Karten verbleiben in diesem Deck</p>
             <div class="buttons" *ngIf="this.rnd !=40">
-                <button class="button random" (click)="randomCard()" *ngIf="this.usedValues.length != 53">Karte ziehen</button>
+                <button class="button random" (click)="randomCard()">Karte
+                    ziehen</button>
                 <button class="button new" (click)="newDeck()">Neues Deck</button>
             </div>
             <div class="buttons" *ngIf="this.rnd ==40">

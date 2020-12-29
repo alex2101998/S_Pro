@@ -21,7 +21,7 @@ export class VolltankenComponent implements OnInit {
   username: string;
   joined: boolean = false;
   playerCount: number;
-  active:any = false;
+  active: any = false;
   activePlayer: number;
   role: any;
 
@@ -40,17 +40,13 @@ export class VolltankenComponent implements OnInit {
       this.usedValues = x
     })
     db.list('currentPlay/game/volltanken/activePlayer').valueChanges().subscribe(x => {
-      console.log(x[0]);
-      
       //@ts-ignore
       if (x[0] == localStorage.getItem('name')) {
         this.active = true;
       }
-      else{
+      else {
         this.active = false;
       }
-      console.log(this.active);
-      
     })
     db.list('currentPlay/game/volltanken/players').valueChanges().subscribe(x => {
       this.players = x
@@ -71,6 +67,7 @@ export class VolltankenComponent implements OnInit {
   }
   ngOnInit(): void {
     this.username = localStorage.getItem('name')
+    this.role = localStorage.getItem('role')
   }
 
   randomCard(start: boolean) {
@@ -118,8 +115,6 @@ export class VolltankenComponent implements OnInit {
 
   newDeck() {
     if (localStorage.getItem('role') == 'admin' || localStorage.getItem('role') == 'host') {
-      console.log("admin oder host");
-
       this.database.ref('currentPlay/game/volltanken/randomValue').set({
         value: 99
       });

@@ -37,12 +37,15 @@
 </table>
 
 
-<p *ngIf="this.rnd != 99" class="counting"><b style="font-size: 28px; color: red;">{{53 - (usedValues.length?
+<p *ngIf="this.rnd != 99" class="counting"><b style="font-size: 28px; color: red;">{{53 - (usedValues?
         usedValues.length : 53)}} </b>Karten verbleiben in diesem Deck</p>
 <div *ngIf="this.active || this.role == 'admin' || this.role == 'host'">
-    <div class="buttons" *ngIf="this.rnd != 99 && this.joined">
+    <div class="buttons" *ngIf="this.rnd != 99 && this.joined ">
         <button class="button random" (click)="randomCard(false)">Karte ziehen</button>
-        <button class="button new" (click)="newDeck()" *ngIf="this.role == 'admin'">Neues Deck</button>
+        <button class="button new" (click)="newDeck()" *ngIf="this.role == 'admin' || this.role == 'host'">Neues Deck</button>
+    </div>
+    <div class="buttons" *ngIf="!this.joined">
+        <button class="button new" (click)="newDeck()" *ngIf="this.role == 'admin' || this.role == 'host'">Neues Deck</button>
     </div>
 </div>
 
