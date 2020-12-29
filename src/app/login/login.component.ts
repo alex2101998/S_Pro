@@ -48,11 +48,10 @@ export class LoginComponent implements OnInit {
 
   checkLogin() {
     var time = new Date().toISOString()
-    console.log(time);
-
     this.users.forEach(user => {
       if (user.username == this.username && user.password == this.password) {
         localStorage.setItem('name', user.username)
+        localStorage.setItem('role', user.role)
         this.database.ref('currentUsers/' + user.username).set({
             time: time
           }
