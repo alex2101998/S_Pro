@@ -29,6 +29,10 @@ export class ActivityComponent implements OnInit {
   role: any;
   gamename: string;
   spielfarbe: string[];
+  nextPlayer: any;
+  timerDuration: number = 5;
+  timeLeft: any = this.timerDuration;
+  interval;
 
   constructor(db: AngularFireDatabase
   ) {
@@ -85,6 +89,15 @@ export class ActivityComponent implements OnInit {
         this.newDeck()
       }
     })
+    db.list(`currentPlay/game/${this.gamename.toLowerCase()}/timer/timeLeft`).valueChanges().subscribe(x => {
+      this.timeLeft = x[0];
+    })
+    db.list(`currentPlay/game/${this.gamename.toLowerCase()}/timer/interval`).valueChanges().subscribe(x => {
+      this.interval = x[0];
+    })
+    db.list(`currentPlay/game/${this.gamename.toLowerCase()}/nextPlayer`).valueChanges().subscribe(x => {
+      this.nextPlayer = x[0];
+    })
   }
   ngOnInit(): void {
     this.username = localStorage.getItem('name')
@@ -93,6 +106,7 @@ export class ActivityComponent implements OnInit {
 
   randomCardRed(start: boolean) {
     if (localStorage.getItem('role') == 'admin' || localStorage.getItem('role') == 'host' || this.active) {
+      this.startTimer();
       var num = Math.floor(Math.random() * this.cardsRed.length);
       if (this.usedValuesRed.length != this.cardsRed.length) {
         while (this.usedValuesRed.includes(num)) {
@@ -101,41 +115,17 @@ export class ActivityComponent implements OnInit {
         this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/randomValue/${this.spielfarbe[0]}`).set({
           value: num
         });
-        this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/usedValues/${this.spielfarbe[0]}`).push(num)
-
-        if (!start) {
-          if (this.activePlayer == this.players.length - 1) {
-            this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/players/` + this.players[0].name).set({
-              name: this.players[0].name,
-              active: true
-            });
-          } else {
-            this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/players/` + this.players[this.activePlayer + 1].name).set({
-              active: true,
-              name: this.players[this.activePlayer + 1].name
-            });
-          }
-
-          this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/players/` + this.players[this.activePlayer].name).set({
-            name: this.players[this.activePlayer].name
-          });
-          if (this.activePlayer == this.players.length - 1) {
-            this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/activePlayer/`).set({
-              name: this.players[0].name
-            });
-          }
-          else {
-            this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/activePlayer/`).set({
-              name: this.players[this.activePlayer + 1].name
-            });
-          }
-        }
+        this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/usedValues/${this.spielfarbe[0]}`).push(num);
       }
+    }
+    if(start){
+      this.changePlayer();
     }
   }
 
-  randomCardGrey(start: boolean) {
+  randomCardGrey() {
     if (localStorage.getItem('role') == 'admin' || localStorage.getItem('role') == 'host' || this.active) {
+      this.startTimer();
       var num = Math.floor(Math.random() * this.cardsGrey.length);
       if (this.usedValuesGrey.length != this.cardsGrey.length) {
         while (this.usedValuesGrey.includes(num)) {
@@ -145,15 +135,13 @@ export class ActivityComponent implements OnInit {
           value: num
         });
         this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/usedValues/${this.spielfarbe[1]}`).push(num)
-
-        if (!start) {
-          this.changePlayer();
-        }
       }
     }
   }
 
   changePlayer(){
+    this.nextPlayer = false;
+    this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/nextPlayer`).set({value: false});
     if (this.activePlayer == this.players.length - 1) {
       this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/players/` + this.players[0].name).set({
         name: this.players[0].name,
@@ -165,7 +153,6 @@ export class ActivityComponent implements OnInit {
         name: this.players[this.activePlayer + 1].name
       });
     }
-
     this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/players/` + this.players[this.activePlayer].name).set({
       name: this.players[this.activePlayer].name
     });
@@ -191,6 +178,10 @@ export class ActivityComponent implements OnInit {
       });
       this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/usedValues/${this.spielfarbe[0]}`).set({});
       this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/usedValues/${this.spielfarbe[1]}`).set({});
+
+      this.resetTimer();
+      this.nextPlayer = false;
+      this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/nextPlayer`).set({value: false});
 
       this.players.forEach(element => {
         this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/players/` + element.name).set({
@@ -219,21 +210,19 @@ export class ActivityComponent implements OnInit {
         name: this.players[0].name,
         active: true
       });
-      this.randomCardRed(true)
+      this.randomCardRed(true);
       this.playerCount = this.players.length
     }
   }
-
-  //Timer
-  timerDuration: number = 60;
-  timeLeft: number = this.timerDuration;
-  interval;
 
 startTimer() {
     this.interval = setInterval(() => {
       if(this.timeLeft > 0) {
         this.timeLeft--;
+        this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/timer/timeLeft`).set({timeLeft: this.timeLeft});
+        console.log("a")
       } else {
+        this.nextPlayer = true;
         this.resetTimer();
       }
     },1000)
@@ -245,7 +234,7 @@ startTimer() {
 
   resetTimer(){
     clearInterval(this.interval);
-    this.timeLeft = this.timerDuration;
+    this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/timer/timeLeft`).set({timeLeft: this.timerDuration});
   }
 
 }
