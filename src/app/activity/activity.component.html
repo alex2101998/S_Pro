@@ -1,1 +1,66 @@
-<p>activity works!</p>
+<h1 class="heading">{{gamename}}</h1>
+<div class="return">
+    <button mat-icon-button style="border: none;">
+        <mat-icon routerLink="/" class="returnIcon" (click)="exitGame()">keyboard_backspace</mat-icon>
+    </button>
+    <p style="padding-left: 40px;" class="loggedInAs">Spiel verlassen</p>
+</div>
+
+<div class="logOut">
+    <button mat-icon-button style="border: none;">
+        <mat-icon routerLink="/logout" class="logOutIcon">exit_to_app</mat-icon>
+    </button>
+    <p class="loggedInAs">Eingeloggt als {{username}}</p>
+</div>
+<div>
+    <button class="button" (click)='startTimer()'>Start Timer</button>
+    <button class="button" (click)='pauseTimer()'>Pause</button>
+    <button class="button" (click)='resetTimer()'>Reset</button>
+    
+    <p class="counting"><b style="font-size: 28px; color: red;">{{timeLeft}}</b> Seconds Left....</p>
+</div>
+<table style="width: 80%;">
+    <tr>
+        <td style="width: 30%; vertical-align: baseline; text-align: center;">
+            <h2 style="color: white">Spieler</h2>
+            <ul style="list-style: none; color: white;">
+                <li *ngFor="let player of players" style="padding: 0; text-align: left;" [ngClass]="{'activeClass': player.active}">
+                    <span>{{player.name}}</span>
+                    <hr>
+                </li>
+            </ul>
+        </td>
+        <td style="width: 80%">
+            <div style="text-align: center;">
+                <img *ngIf="this.active && this.rnd[0] != 300" src="{{cardsRed[rnd[0]].url}}" width="330" height="500" style="border-radius: 20px; transform:rotate(-90deg);">
+                <img *ngIf="!this.active || this.rnd[0] == 300" src="{{deckblattRed.url}}" width="330" height="500" style="border-radius: 20px; transform:rotate(-90deg);">
+            </div>
+            <p *ngIf="this.rnd[0] != 300" class="counting"><b style="font-size: 28px; color: red;">{{cardsRed.length - (usedValuesRed? usedValuesRed.length : cardsRed.length)}} </b>Karten verbleiben in diesem Deck</p>
+            <div *ngIf="this.rnd[0] != 300 && (this.active || this.role == 'admin' || this.role == 'host')">
+                <div class="buttons" >
+                    <button class="button random" (click)="randomCardRed(false)">Karte ziehen</button>
+                    <button class="button random" *ngIf="this.rnd[1] == 300 && (this.role == 'admin' || this.role == 'host')" (click)="randomCardGrey(false)">Erste Graue</button>
+                </div>
+            </div>
+        </td>
+        <td style="width: 80%">
+            <div style="text-align: center;">
+                <img *ngIf="this.active && this.rnd[1] != 300" src="{{cardsGrey[rnd[1]].url}}" width="330" height="500" style="border-radius: 20px; transform:rotate(-90deg);"> 
+                <img *ngIf="!this.active || this.rnd[1] == 300" src="{{deckblattGrey.url}}" width="330" height="500" style="border-radius: 20px; transform:rotate(-90deg);">
+            </div>
+            <p *ngIf="this.rnd[1] != 300" class="counting"><b style="font-size: 28px; color: red;">{{cardsGrey.length - (usedValuesGrey? usedValuesGrey.length : cardsGrey.length)}} </b>Karten verbleiben in diesem Deck</p>
+            <div class="buttons" *ngIf="this.rnd[1] != 300 && this.joined && (this.active || this.role == 'admin' || this.role == 'host')">
+                <button class="button random" (click)="randomCardGrey(false)">Karte ziehen</button>
+            </div>
+        </td>
+    </tr>
+</table>
+
+
+<div class="buttons" *ngIf="this.joined && (this.rnd[0] == 300 && this.rnd[1] == 300) && (this.role == 'admin' || this.role == 'host')">
+    <button class="button random" (click)="startGame()" style="width: 200px;">Start!</button>
+</div>
+
+<button class="button new" (click)="newDeck()" *ngIf="(this.rnd[0] != 300 || this.rnd[1] != 300) && (this.role == 'admin' || this.role == 'host')">Neues Deck</button>
+
+<button class="button" (click)="joinGame()" *ngIf="!this.joined">Ich möchte mitspielen!</button>
