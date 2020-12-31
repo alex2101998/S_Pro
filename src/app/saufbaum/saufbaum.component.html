@@ -10,7 +10,7 @@
 </div>
 <table width=100%>
     <tr>
-        <td style="width: 30%; vertical-align: baseline; text-align: center;">
+        <td style="width: 30%; vertical-align: baseline; text-align: center;" *ngIf="players.length > 0">
             <h2 style="color: white">Spieler</h2>
             <ul style="list-style: none; color: white;">
                 <li *ngFor="let player of players" style="padding: 0; text-align: left;" [ngClass]="{'activeClass': player.active}">

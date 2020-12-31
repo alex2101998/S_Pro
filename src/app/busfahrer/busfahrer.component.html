@@ -76,7 +76,7 @@
 </div>
 
 <div>
-    <p class="counting"><b style="font-size: 28px; color: red;">{{cards.length - (usedValues.length? usedValues.length : cards.length)}} </b>cards left in this deck</p>
+    <p class="counting"><b style="font-size: 28px; color: red;">{{cards.length - (usedValues.length? usedValues.length : cards.length)}} </b>Karten verbleiben in diesem Deck</p>
     <div>
         <div class="buttons">
             <button class="button new" (click)="newDeck()">Neues Deck</button>
@@ -85,7 +85,7 @@
     </div>
     
     <div *ngIf="usedValues.length == cards.length">
-        <img src="https://banner2.cleanpng.com/20180630/esh/kisspng-traffic-collision-accident-bus-drawing-clip-art-5b37cc178a1802.2920162515303833835656.jpg" alt="Test">
+        <img src="../../assets/busClipart.png" alt="crashingBus">
         <p class="counting">Du hast den Bus gecrasht. Zeit für eine neue Runde.</p>
     </div>
     <!--Generator, welcher Spieler muss wird hiervon gestartet

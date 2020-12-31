@@ -33,7 +33,9 @@ label {
 i {
     position: absolute;
     top: 12px;
-    right: -0;
+    right: 0;
+    margin-right: -20px;
+    line-height: 30px;
 }
 
 .pw {
