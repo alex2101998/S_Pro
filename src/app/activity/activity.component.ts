@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import * as firebase from 'firebase';
 import { Observable } from 'rxjs';
-import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-activity',
