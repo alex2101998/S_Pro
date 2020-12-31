@@ -50,12 +50,6 @@
                         ziehen</button>
                     <button class="button new" (click)="newDeck()">Neues Deck</button>
                 </div>
-                <div class="buttons" *ngIf="this.rnd == 40 && this.joined">
-                    <button class="button random" (click)="startGame()" style="width: 200px;">Start!</button>
-                </div>
-                <div class="buttons" *ngIf="!this.joined">
-                    <button class="button new" (click)="newDeck()">Neues Deck</button>
-                </div>
             </div>
             <div class="buttons" *ngIf="this.usedValues.length == 53">
                 <button class="button new" (click)="newDeck()">Neues Deck</button>
