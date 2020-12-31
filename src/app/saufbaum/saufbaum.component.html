@@ -13,7 +13,8 @@
         <td style="width: 30%; vertical-align: baseline; text-align: center;" *ngIf="players.length > 0">
             <h2 style="color: white">Spieler</h2>
             <ul style="list-style: none; color: white;">
-                <li *ngFor="let player of players" style="padding: 0; text-align: left;" [ngClass]="{'activeClass': player.active}">
+                <li *ngFor="let player of players" style="padding: 0; text-align: left;"
+                    [ngClass]="{'activeClass': player.active}">
                     <span>{{player.name}}</span>
                     <hr>
                 </li>
@@ -21,7 +22,7 @@
         </td>
         <td style="text-align: center;">
             <div style="text-align: center;">
-                <h2 style="color: white" *ngIf="this.rnd !=40">Deine Karte</h2>
+                <h2 style="color: white">Deine Karte</h2>
                 <img src="{{cards[rnd].url}}" width="250" height="400">
                 <i>
                     <p style="margin-top: -7px; color: white;">{{cards[rnd].name}}</p>
@@ -30,20 +31,40 @@
 
             <p *ngIf="this.rnd != 40" class="counting"><b style="font-size: 28px; color: red;">{{53 - (usedValues?
                     usedValues.length : 53)}} </b>Karten verbleiben in diesem Deck</p>
-            <div *ngIf="this.active || this.role == 'admin' || this.role == 'host'">
+            <div *ngIf="this.finished || this.rnd == 40">
+                <div *ngIf="this.nextActive || this.rnd == 40">
+                    <div class="buttons" *ngIf="this.rnd !=40">
+                        <button class="button random" (click)="randomCard(false)">Karte
+                            ziehen
+                        </button>
+                    </div>
+                    <div class="buttons" *ngIf="this.rnd == 40 && this.joined">
+                        <button class="button random" (click)="startGame()" style="width: 200px;">Start!</button>
+                    </div>
+                </div>
+            </div>
+            <!-- ADMIN PANEL -->
+            <div *ngIf="this.role == 'admin'">
                 <div class="buttons" *ngIf="this.rnd !=40">
                     <button class="button random" (click)="randomCard(false)">Karte
                         ziehen</button>
-                    <button class="button new" (click)="newDeck()" *ngIf="this.role == 'admin' || this.role == 'host'">Neues Deck</button>
+                    <button class="button new" (click)="newDeck()">Neues Deck</button>
                 </div>
                 <div class="buttons" *ngIf="this.rnd == 40 && this.joined">
-                    <button class="button random" (click)="startGame()" style="width: 200px;" *ngIf="this.role == 'admin' || this.role == 'host'">Start!</button>
+                    <button class="button random" (click)="startGame()" style="width: 200px;">Start!</button>
                 </div>
                 <div class="buttons" *ngIf="!this.joined">
-                    <button class="button new" (click)="newDeck()" *ngIf="this.role == 'admin' || this.role == 'host'">Neues Deck</button>
+                    <button class="button new" (click)="newDeck()">Neues Deck</button>
                 </div>
             </div>
-            <button class="button" style="text-align: center;" (click)="joinGame()" *ngIf="!this.joined && this.rnd == 40">
+            <div class="buttons" *ngIf="this.usedValues.length == 53">
+                <button class="button new" (click)="newDeck()">Neues Deck</button>
+            </div>
+            <div class="buttons" *ngIf="active && !finished">
+                <button class="button random" (click)="finishTurn()">Zug beenden</button>
+            </div>
+            <button class="button" style="text-align: center;" (click)="joinGame()"
+                *ngIf="!this.joined && this.rnd == 40">
                 Ich möchte mitspielen!
             </button>
         </td>
@@ -69,7 +90,8 @@
 </table>
 <div *ngIf="this.active || this.role == 'admin' || this.role == 'host'">
     <form style="width: 80%;" (submit)="submitRule($event)" *ngIf="isJack">
-        <input class="newRuleInput" type="text" name="regeltext" placeholder="Neue Regel hinzufügen..." required minlength="10">
+        <input class="newRuleInput" type="text" name="regeltext" placeholder="Neue Regel hinzufügen..." required
+            minlength="10">
         <button class="button" label="Regel erstellen" type="submit">Regel erstellen</button>
     </form>
 </div>
@@ -79,4 +101,5 @@
         <p class="customRule">{{rule.description}} - {{rule.name}}</p>
     </li>
 </ul>
-<p *ngIf="rules.length == 0" style="color: white; font-size: 20px;">Bisher wurde noch kein Bube aufgedeckt. Deswegen gibt es keine zusätzlichen Regeln</p>
+<p *ngIf="rules.length == 0" style="color: white; font-size: 20px;">Bisher wurde noch kein Bube aufgedeckt. Deswegen
+    gibt es keine zusätzlichen Regeln</p>

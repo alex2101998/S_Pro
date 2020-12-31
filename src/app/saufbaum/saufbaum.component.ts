@@ -16,16 +16,17 @@ export class SaufbaumComponent implements OnInit {
   rules: any[] = [];
   game: Observable<any[]>;
   rnd: any = 0;
-  usedValues: any[];
+  usedValues: any[] = [];
   isJack: boolean = false;
   username: string;
   joined: boolean = false;
   playerCount: number;
   active: any = false;
   activePlayer: number;
+  nextActive: boolean = false;
   role: any;
-  players: any[];
-
+  players: any[] = [];
+  finished: boolean = false;
 
   constructor(db: AngularFireDatabase
   ) {
@@ -37,16 +38,16 @@ export class SaufbaumComponent implements OnInit {
       if (this.cards[this.rnd].name.includes('Jack')) {
         this.isJack = true
       }
-      else{
+      else {
         this.isJack = false
       }
-      
+
     })
     db.list('currentPlay/game/saufbaum/usedValues').valueChanges().subscribe(x => {
       this.usedValues = x
     })
     db.list('currentPlay/game/saufbaum/customRules').valueChanges().subscribe(x => {
-     this.rules = x
+      this.rules = x
     })
     db.list('currentPlay/game/saufbaum/activePlayer').valueChanges().subscribe(x => {
       //@ts-ignore
@@ -55,6 +56,21 @@ export class SaufbaumComponent implements OnInit {
       }
       else {
         this.active = false;
+      }
+    })
+    db.list('currentPlay/game/saufbaum/finishedTurn').valueChanges().subscribe(x => {
+      if (x[0] == true) {
+        this.finished = true
+      }
+      else this.finished = false
+    })
+    db.list('currentPlay/game/saufbaum/nextActivePlayer').valueChanges().subscribe(x => {
+      //@ts-ignore
+      if (x[0] == localStorage.getItem('name')) {
+        this.nextActive = true;
+      }
+      else {
+        this.nextActive = false;
       }
     })
     db.list('currentPlay/game/saufbaum/players').valueChanges().subscribe(x => {
@@ -79,7 +95,7 @@ export class SaufbaumComponent implements OnInit {
   }
 
   randomCard(start: boolean) {
-    if (localStorage.getItem('role') == 'admin' || localStorage.getItem('role') == 'host' || this.active) {
+    if (localStorage.getItem('role') == 'admin' || localStorage.getItem('role') == 'host' || this.nextActive || start) {
       var num = Math.floor(Math.random() * 53);
       if (this.usedValues.length != 53) {
         while (this.usedValues.includes(num)) {
@@ -89,35 +105,54 @@ export class SaufbaumComponent implements OnInit {
           value: num
         });
         this.database.ref('currentPlay/game/saufbaum/usedValues').push(num)
-
-        if (!start) {
-          if (this.activePlayer == this.players.length - 1) {
-            this.database.ref('currentPlay/game/saufbaum/players/' + this.players[0].name).set({
-              name: this.players[0].name,
-              active: true
-            });
-          } else {
-            this.database.ref('currentPlay/game/saufbaum/players/' + this.players[this.activePlayer + 1].name).set({
-              active: true,
-              name: this.players[this.activePlayer + 1].name
-            });
-          }
-
-          this.database.ref('currentPlay/game/saufbaum/players/' + this.players[this.activePlayer].name).set({
-            name: this.players[this.activePlayer].name
-          });
-          if (this.activePlayer == this.players.length - 1) {
-            this.database.ref('currentPlay/game/saufbaum/activePlayer/').set({
-              name: this.players[0].name
-            });
-          }
-          else {
-            this.database.ref('currentPlay/game/saufbaum/activePlayer/').set({
-              name: this.players[this.activePlayer + 1].name
-            });
-          }
-        }
+        this.setNextPlayer(start)
       }
+    }
+    this.startTurn()
+  }
+
+  setNextPlayer(start) {
+    if (start) {
+      this.database.ref('currentPlay/game/saufbaum/activePlayer/').set({
+        name: this.players[0].name
+      });
+      if (this.players.length > 1) {
+        this.database.ref('currentPlay/game/saufbaum/nextActivePlayer/').set({
+          name: this.players[1].name
+        });
+      }
+    }
+    else {
+
+      //Wenn active Player gleich letzer Spieler der Liste
+      if (this.activePlayer == this.players.length - 1) {
+        this.database.ref('currentPlay/game/saufbaum/players/' + this.players[0].name).set({
+          name: this.players[0].name,
+          active: true
+        });
+        this.database.ref('currentPlay/game/saufbaum/activePlayer/').set({
+          name: this.players[0].name
+        });
+        if (this.players.length > 1) {
+          this.database.ref('currentPlay/game/saufbaum/nextActivePlayer/').set({
+            name: this.players[1].name
+          });
+        }
+      } else {
+        this.database.ref('currentPlay/game/saufbaum/players/' + this.players[this.activePlayer + 1].name).set({
+          active: true,
+          name: this.players[this.activePlayer + 1].name
+        });
+        this.database.ref('currentPlay/game/saufbaum/activePlayer/').set({
+          name: this.players[this.activePlayer + 1].name
+        });
+        this.database.ref('currentPlay/game/saufbaum/nextActivePlayer/').set({
+          name: this.players[(this.activePlayer + 2) % this.players.length].name
+        });
+      }
+      this.database.ref('currentPlay/game/saufbaum/players/' + this.players[this.activePlayer].name).set({
+        name: this.players[this.activePlayer].name
+      });
     }
   }
 
@@ -134,9 +169,11 @@ export class SaufbaumComponent implements OnInit {
         name: element.name
       });
     });
+    this.database.ref('currentPlay/game/saufbaum/activePlayer').set({})
+    this.database.ref('currentPlay/game/saufbaum/nextActivePlayer').set({})
   }
 
-  submitRule(event){
+  submitRule(event) {
     var text = event.target[0].value
     var name = localStorage.getItem('name')
     event.preventDefault()
@@ -161,13 +198,23 @@ export class SaufbaumComponent implements OnInit {
     this.joined = false
   }
   startGame() {
-    if (localStorage.getItem('role') == 'admin' || localStorage.getItem('role') == 'host') {
-      this.database.ref('currentPlay/game/saufbaum/players/' + this.players[0].name).set({
-        name: this.players[0].name,
-        active: true
-      });
-      this.randomCard(true)
-      this.playerCount = this.players.length
-    }
+    this.database.ref('currentPlay/game/saufbaum/players/' + this.players[0].name).set({
+      name: this.players[0].name,
+      active: true
+    });
+    this.randomCard(true)
+    this.playerCount = this.players.length
+
+  }
+
+  finishTurn() {
+    this.database.ref('currentPlay/game/saufbaum/finishedTurn/').set({
+      value: true
+    });
+  }
+  startTurn() {
+    this.database.ref('currentPlay/game/saufbaum/finishedTurn/').set({
+      value: false
+    });
   }
 }

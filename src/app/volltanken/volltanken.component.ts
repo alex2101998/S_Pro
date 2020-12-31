@@ -15,8 +15,7 @@ export class VolltankenComponent implements OnInit {
   cards: any[] = [{ name: "", url: "" }];
   game: Observable<any[]>;
   rnd: any = 0;
-  usedValues: any[];
-  players: any[];
+  usedValues: any[] = [];
   deckblatt: any = { url: "" };
   username: string;
   joined: boolean = false;
@@ -24,6 +23,9 @@ export class VolltankenComponent implements OnInit {
   active: any = false;
   activePlayer: number;
   role: any;
+  players: any[] = [];
+  finished: boolean = false;
+  nextActive: boolean = false;
 
   constructor(db: AngularFireDatabase
   ) {
@@ -46,6 +48,21 @@ export class VolltankenComponent implements OnInit {
       }
       else {
         this.active = false;
+      }
+    })
+    db.list('currentPlay/game/volltanken/finishedTurn').valueChanges().subscribe(x => {
+      if (x[0] == true) {
+        this.finished = true
+      }
+      else this.finished = false
+    })
+    db.list('currentPlay/game/volltanken/nextActivePlayer').valueChanges().subscribe(x => {
+      //@ts-ignore
+      if (x[0] == localStorage.getItem('name')) {
+        this.nextActive = true;
+      }
+      else {
+        this.nextActive = false;
       }
     })
     db.list('currentPlay/game/volltanken/players').valueChanges().subscribe(x => {
@@ -71,7 +88,7 @@ export class VolltankenComponent implements OnInit {
   }
 
   randomCard(start: boolean) {
-    if (localStorage.getItem('role') == 'admin' || localStorage.getItem('role') == 'host' || this.active) {
+    if (localStorage.getItem('role') == 'admin' || localStorage.getItem('role') == 'host' || this.nextActive || start) {
       var num = Math.floor(Math.random() * 53);
       if (this.usedValues.length != 53) {
         while (this.usedValues.includes(num)) {
@@ -81,51 +98,72 @@ export class VolltankenComponent implements OnInit {
           value: num
         });
         this.database.ref('currentPlay/game/volltanken/usedValues').push(num)
-
-        if (!start) {
-          if (this.activePlayer == this.players.length - 1) {
-            this.database.ref('currentPlay/game/volltanken/players/' + this.players[0].name).set({
-              name: this.players[0].name,
-              active: true
-            });
-          } else {
-            this.database.ref('currentPlay/game/volltanken/players/' + this.players[this.activePlayer + 1].name).set({
-              active: true,
-              name: this.players[this.activePlayer + 1].name
-            });
-          }
-
-          this.database.ref('currentPlay/game/volltanken/players/' + this.players[this.activePlayer].name).set({
-            name: this.players[this.activePlayer].name
-          });
-          if (this.activePlayer == this.players.length - 1) {
-            this.database.ref('currentPlay/game/volltanken/activePlayer/').set({
-              name: this.players[0].name
-            });
-          }
-          else {
-            this.database.ref('currentPlay/game/volltanken/activePlayer/').set({
-              name: this.players[this.activePlayer + 1].name
-            });
-          }
-        }
+        this.setNextPlayer(start)
       }
+    }
+    this.startTurn()
+  }
+
+  setNextPlayer(start) {
+    if (start) {
+      this.database.ref('currentPlay/game/volltanken/activePlayer/').set({
+        name: this.players[0].name
+      });
+      if (this.players.length > 1) {
+        this.database.ref('currentPlay/game/volltanken/nextActivePlayer/').set({
+          name: this.players[1].name
+        });
+      }
+    }
+    else {
+
+      //Wenn active Player gleich letzer Spieler der Liste
+      if (this.activePlayer == this.players.length - 1) {
+        this.database.ref('currentPlay/game/volltanken/players/' + this.players[0].name).set({
+          name: this.players[0].name,
+          active: true
+        });
+        this.database.ref('currentPlay/game/volltanken/activePlayer/').set({
+          name: this.players[0].name
+        });
+        if (this.players.length > 1) {
+          this.database.ref('currentPlay/game/volltanken/nextActivePlayer/').set({
+            name: this.players[1].name
+          });
+        }
+      } else {
+        this.database.ref('currentPlay/game/volltanken/players/' + this.players[this.activePlayer + 1].name).set({
+          active: true,
+          name: this.players[this.activePlayer + 1].name
+        });
+        this.database.ref('currentPlay/game/volltanken/activePlayer/').set({
+          name: this.players[this.activePlayer + 1].name
+        });
+        this.database.ref('currentPlay/game/volltanken/nextActivePlayer/').set({
+          name: this.players[(this.activePlayer + 2) % this.players.length].name
+        });
+      }
+      this.database.ref('currentPlay/game/volltanken/players/' + this.players[this.activePlayer].name).set({
+        name: this.players[this.activePlayer].name
+      });
     }
   }
 
-  newDeck() {
-    if (localStorage.getItem('role') == 'admin' || localStorage.getItem('role') == 'host') {
-      this.database.ref('currentPlay/game/volltanken/randomValue').set({
-        value: 99
-      });
-      this.database.ref('currentPlay/game/volltanken/usedValues').set({});
 
-      this.players.forEach(element => {
-        this.database.ref('currentPlay/game/volltanken/players/' + element.name).set({
-          name: element.name
-        });
+  newDeck() {
+    this.database.ref('currentPlay/game/volltanken/randomValue').set({
+      value: 99
+    });
+    this.database.ref('currentPlay/game/volltanken/usedValues').set({});
+
+    this.players.forEach(element => {
+      this.database.ref('currentPlay/game/volltanken/players/' + element.name).set({
+        name: element.name
       });
-    }
+    });
+    this.database.ref('currentPlay/game/volltanken/activePlayer').set({})
+    this.database.ref('currentPlay/game/volltanken/nextActivePlayer').set({})
+
   }
 
   joinGame() {
@@ -142,13 +180,24 @@ export class VolltankenComponent implements OnInit {
   }
 
   startGame() {
-    if (localStorage.getItem('role') == 'admin' || localStorage.getItem('role') == 'host') {
-      this.database.ref('currentPlay/game/volltanken/players/' + this.players[0].name).set({
-        name: this.players[0].name,
-        active: true
-      });
-      this.randomCard(true)
-      this.playerCount = this.players.length
-    }
+
+    this.database.ref('currentPlay/game/volltanken/players/' + this.players[0].name).set({
+      name: this.players[0].name,
+      active: true
+    });
+    this.randomCard(true)
+    this.playerCount = this.players.length
+
+  }
+
+  finishTurn() {
+    this.database.ref('currentPlay/game/volltanken/finishedTurn/').set({
+      value: true
+    });
+  }
+  startTurn() {
+    this.database.ref('currentPlay/game/volltanken/finishedTurn/').set({
+      value: false
+    });
   }
 }
