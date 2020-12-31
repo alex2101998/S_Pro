@@ -30,7 +30,7 @@ export class ActivityComponent implements OnInit {
   gamename: string;
   spielfarbe: string[];
   nextPlayer: any;
-  timerDuration: number = 5;
+  timerDuration: number = 60;
   timeLeft: any = this.timerDuration;
   interval;
 
@@ -220,7 +220,6 @@ startTimer() {
       if(this.timeLeft > 0) {
         this.timeLeft--;
         this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/timer/timeLeft`).set({timeLeft: this.timeLeft});
-        console.log("a")
       } else {
         this.nextPlayer = true;
         this.resetTimer();
