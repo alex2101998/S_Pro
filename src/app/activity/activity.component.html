@@ -12,13 +12,13 @@
     </button>
     <p class="loggedInAs">Eingeloggt als {{username}}</p>
 </div>
-<div>
+<!--<div>
     <button class="button" (click)='startTimer()'>Start Timer</button>
     <button class="button" (click)='pauseTimer()'>Pause</button>
     <button class="button" (click)='resetTimer()'>Reset</button>
     
     <p class="counting"><b style="font-size: 28px; color: red;">{{timeLeft}}</b> Seconds Left....</p>
-</div>
+</div>-->
 <table style="width: 80%;">
     <tr>
         <td style="width: 30%; vertical-align: baseline; text-align: center;">
@@ -37,7 +37,7 @@
             </div>
             <p *ngIf="this.rnd[0] != 300" class="counting"><b style="font-size: 28px; color: red;">{{cardsRed.length - (usedValuesRed? usedValuesRed.length : cardsRed.length)}} </b>Karten verbleiben in diesem Deck</p>
             <div *ngIf="this.rnd[0] != 300 && (this.active || this.role == 'admin' || this.role == 'host')" class="buttons" >
-                <button class="button random"  *ngIf="this.nextPlayer != true" (click)="randomCardRed(false)">Karte ziehen</button>
+                <button class="button random"  *ngIf="this.joined && (this.active || this.role == 'admin' || this.role == 'host')" (click)="randomCardRed(false)">Karte ziehen</button>
                 <button class="button random" *ngIf="this.rnd[1] == 300 && (this.role == 'admin' || this.role == 'host')" (click)="randomCardGrey()">Erste Graue</button>
             </div>
         </td>
@@ -48,7 +48,7 @@
             </div>
             <p *ngIf="this.rnd[1] != 300" class="counting"><b style="font-size: 28px; color: red;">{{cardsGrey.length - (usedValuesGrey? usedValuesGrey.length : cardsGrey.length)}} </b>Karten verbleiben in diesem Deck</p>
             <div class="buttons" *ngIf="this.rnd[1] != 300 && this.joined && (this.active || this.role == 'admin' || this.role == 'host')">
-                <button class="button random" *ngIf="this.nextPlayer != true" (click)="randomCardGrey()">Karte ziehen</button>
+                <button class="button random" (click)="randomCardGrey()">Karte ziehen</button>
             </div>
         </td>
     </tr>
@@ -59,7 +59,7 @@
     <button class="button random" (click)="startGame()" style="width: 200px;">Start!</button>
 </div>
 
-<button class="button random"  *ngIf="this.nextPlayer == true && (this.rnd[0] != 300 && (this.active || this.role == 'admin' || this.role == 'host'))" (click)="changePlayer()">Nächster Spieler</button>
+<button class="button random"  *ngIf="(this.rnd[0] != 300 && (this.active || this.role == 'admin' || this.role == 'host'))" (click)="changePlayer()">Nächster Spieler</button>
 
 <button class="button new" (click)="newDeck()" *ngIf="(this.rnd[0] != 300 || this.rnd[1] != 300) && (this.role == 'admin' || this.role == 'host')">Neues Deck</button>
 

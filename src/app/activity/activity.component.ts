@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import * as firebase from 'firebase';
 import { Observable } from 'rxjs';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-activity',
@@ -89,12 +90,12 @@ export class ActivityComponent implements OnInit {
         this.newDeck()
       }
     })
-    db.list(`currentPlay/game/${this.gamename.toLowerCase()}/timer/timeLeft`).valueChanges().subscribe(x => {
+  /*  db.list(`currentPlay/game/${this.gamename.toLowerCase()}/timer/timeLeft`).valueChanges().subscribe(x => {
       this.timeLeft = x[0];
     })
     db.list(`currentPlay/game/${this.gamename.toLowerCase()}/timer/interval`).valueChanges().subscribe(x => {
       this.interval = x[0];
-    })
+    })*/
     db.list(`currentPlay/game/${this.gamename.toLowerCase()}/nextPlayer`).valueChanges().subscribe(x => {
       this.nextPlayer = x[0];
     })
@@ -106,7 +107,7 @@ export class ActivityComponent implements OnInit {
 
   randomCardRed(start: boolean) {
     if (localStorage.getItem('role') == 'admin' || localStorage.getItem('role') == 'host' || this.active) {
-      this.startTimer();
+      //this.startTimer();
       var num = Math.floor(Math.random() * this.cardsRed.length);
       if (this.usedValuesRed.length != this.cardsRed.length) {
         while (this.usedValuesRed.includes(num)) {
@@ -125,7 +126,7 @@ export class ActivityComponent implements OnInit {
 
   randomCardGrey() {
     if (localStorage.getItem('role') == 'admin' || localStorage.getItem('role') == 'host' || this.active) {
-      this.startTimer();
+      //this.startTimer();
       var num = Math.floor(Math.random() * this.cardsGrey.length);
       if (this.usedValuesGrey.length != this.cardsGrey.length) {
         while (this.usedValuesGrey.includes(num)) {
@@ -179,7 +180,7 @@ export class ActivityComponent implements OnInit {
       this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/usedValues/${this.spielfarbe[0]}`).set({});
       this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/usedValues/${this.spielfarbe[1]}`).set({});
 
-      this.resetTimer();
+      //this.resetTimer();
       this.nextPlayer = false;
       this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/nextPlayer`).set({value: false});
 
@@ -215,7 +216,7 @@ export class ActivityComponent implements OnInit {
     }
   }
 
-startTimer() {
+/*startTimer() {
     this.interval = setInterval(() => {
       if(this.timeLeft > 0) {
         this.timeLeft--;
@@ -234,6 +235,6 @@ startTimer() {
   resetTimer(){
     clearInterval(this.interval);
     this.database.ref(`currentPlay/game/${this.gamename.toLowerCase()}/timer/timeLeft`).set({timeLeft: this.timerDuration});
-  }
+  }*/
 
 }
